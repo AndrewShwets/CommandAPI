@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandAPI.Models;
+using CommandAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,12 +14,32 @@ namespace CommandAPI.Controllers
     [ApiController]
     public class CommandsController : ControllerBase
     {
-        [HttpGet]
-        public async Task<IEnumerable<string>> GetCommandsList()
+        private readonly ICommandAPIRepo commandAPIRepo;
+
+        public CommandsController(ICommandAPIRepo commandAPIRepo)
         {
-            IEnumerable<string> list = await Task.FromResult(new string[] { "this", "is", "hard", "coded", "text" });
+            this.commandAPIRepo = commandAPIRepo;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<Command>> GetCommandsList()
+        {
+            IEnumerable<Command> list = await Task.FromResult(commandAPIRepo.GetAllCommands());
 
             return list;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Command>> GetCommandById(int id)
+        {
+            Command command = await Task.FromResult<Command>(commandAPIRepo.GetCommandById(id));
+
+            if (command == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(command);
         }
 
         [HttpPost]
