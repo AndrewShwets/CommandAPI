@@ -41,12 +41,6 @@ namespace CommandAPI.Controllers
 
             return Ok(command);
         }
-
-        [HttpPost]
-        public async Task CreateCommand([FromBody] Command command)
-        {
-            Console.WriteLine($"Id: {command.Id}.\nHowTo: {command.HowTo}.\nCommandLine: {command.CommandLine}.");
-        }
     }
 }
 
