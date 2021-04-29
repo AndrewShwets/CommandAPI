@@ -24,7 +24,7 @@ namespace CommandAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Command>> GetCommandsList()
         {
-            IEnumerable<Command> list = await Task.FromResult(commandAPIRepo.GetAllCommands());
+            IEnumerable<Command> list = await Task.Run(() => commandAPIRepo.GetAllCommands());
 
             return list;
         }
@@ -32,7 +32,7 @@ namespace CommandAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Command>> GetCommandById(int id)
         {
-            Command command = await Task.FromResult<Command>(commandAPIRepo.GetCommandById(id));
+            Command command = await Task.Run<Command>(() => commandAPIRepo.GetCommandById(id));
 
             if (command == null)
             {
