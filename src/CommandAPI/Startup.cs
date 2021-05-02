@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using CommandAPI.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Newtonsoft.Json.Serialization;
 
 namespace CommandAPI
 {
@@ -32,9 +34,16 @@ namespace CommandAPI
                 options.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnection"));
             });
 
+            // AutoMapper package for mapping models and DTOs
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddScoped<ICommandAPIRepo, SqlCommandAPIRepo>();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(s =>
+            {
+                s.SerializerSettings.ContractResolver = new
+                CamelCasePropertyNamesContractResolver();
+            }); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
