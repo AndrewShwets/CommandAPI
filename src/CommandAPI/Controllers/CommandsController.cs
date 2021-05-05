@@ -18,27 +18,21 @@ namespace CommandAPI.Controllers
     [ApiController]
     public class CommandsController : Controller
     {
-        private readonly ICommandAPIRepo _commandAPIRepo;
-        private readonly IWebHostEnvironment _env;
+        private readonly ICommandAPIRepo _commandAPIRepo;       
         private readonly IMapper _mapper;
 
-        public CommandsController(ICommandAPIRepo commandAPIRepo, IWebHostEnvironment env, IMapper mapper)
+        public CommandsController(ICommandAPIRepo commandAPIRepo, IMapper mapper)
         {
-            _commandAPIRepo = commandAPIRepo;
-            _env = env;
+            _commandAPIRepo = commandAPIRepo;          
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetCommandsList()
+        public async Task<ActionResult<IEnumerable<CommandReadDto>>> GetAllCommands()
         {
             IEnumerable<Command> commandsList = await Task.Run(() => _commandAPIRepo.GetAllCommands());
 
-            return Ok(new
-            {
-                data = _mapper.Map<IEnumerable<CommandReadDto>>(commandsList),
-                env = _env.EnvironmentName
-            });
+            return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandsList));
         }
 
         [HttpGet("{id}", Name = "GetCommandById")]
@@ -53,8 +47,7 @@ namespace CommandAPI.Controllers
 
             return Ok(new
             {
-                data = _mapper.Map<CommandReadDto>(command),
-                env = _env.EnvironmentName
+                data = _mapper.Map<CommandReadDto>(command)                
             });
         }
 
